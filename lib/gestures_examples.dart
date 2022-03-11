@@ -1,7 +1,7 @@
 import 'math_utils.dart';
 
 List<Unistroke> getTestGestures() {
-  List<Unistroke> unistrokes = new List<Unistroke>();
+  List<Unistroke> unistrokes = <Unistroke>[];
   unistrokes.add(Unistroke("triangle", [
     new Point(137, 139),
     new Point(135, 141),

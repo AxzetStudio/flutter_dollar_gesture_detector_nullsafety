@@ -2,15 +2,14 @@ import 'math_utils.dart';
 
 /// DollarRecognizer class
 class DollarRecognizer {
-
-  List<Unistroke> unistrokes;
+  late List<Unistroke> unistrokes;
 
   DollarRecognizer() {
-    this.unistrokes  = new List<Unistroke>();
+    this.unistrokes = <Unistroke>[];
   }
 
   DollarRecognizer.withGestures(List<Unistroke> unistrokes) {
-    this.unistrokes = new List<Unistroke>();
+    this.unistrokes = <Unistroke>[];
     addGestures(unistrokes);
   }
 
@@ -26,10 +25,10 @@ class DollarRecognizer {
       double d;
       if (useProtractor)
         d = optimalCosineDistance(
-            unistrokes[i].vector, candidate.vector); // Protractor
+            unistrokes[i].vector!, candidate.vector); // Protractor
       else
-        d = distanceAtBestAngle(candidate.points, unistrokes[i], -anglerange,
-            anglerange, angleprecision); // Golden Section Search (original $1)
+        d = distanceAtBestAngle(candidate.points!, unistrokes[i], -anglerange!,
+            anglerange!, angleprecision); // Golden Section Search (original $1)
       if (d < b) {
         b = d; // best (least) distance
         u = i; // unistroke index

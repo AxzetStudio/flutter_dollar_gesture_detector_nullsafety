@@ -8,10 +8,11 @@ const SQUARESIZE = 250.0;
 final double phi = 0.5 * (-1.0 + math.sqrt(5.0)); // Golden Ratio
 final int infinity = double.maxFinite.toInt();
 const Point origin = const Point(0, 0);
-final double diagonal = math.sqrt(SQUARESIZE * SQUARESIZE + SQUARESIZE * SQUARESIZE);
+final double diagonal =
+    math.sqrt(SQUARESIZE * SQUARESIZE + SQUARESIZE * SQUARESIZE);
 final double halfdiagonal = 0.5 * diagonal;
-final double anglerange = deg2Rad(45.0);
-final double angleprecision = deg2Rad(2.0);
+final double? anglerange = deg2Rad(45.0);
+final double? angleprecision = deg2Rad(2.0);
 
 class Point {
   final double x;
@@ -30,23 +31,23 @@ class Rectangle {
 }
 
 class Unistroke {
-  String name;
-  List<Point> points;
-  List<double> vector;
+  String? name;
+  List<Point>? points;
+  List<double>? vector;
 
   Unistroke(String name, points) {
     this.name = name;
     this.points = resample(points, NUMPOINTS);
-    var radians = indicativeAngle(this.points);
-    this.points = rotateBy(this.points, -radians);
-    this.points = scaleTo(this.points, SQUARESIZE);
-    this.points = translateTo(this.points, origin);
-    this.vector = vectorize(this.points);
+    var radians = indicativeAngle(this.points!);
+    this.points = rotateBy(this.points!, -radians);
+    this.points = scaleTo(this.points!, SQUARESIZE);
+    this.points = translateTo(this.points!, origin);
+    this.vector = vectorize(this.points!);
   }
 }
 
 class Result {
-  String name;
+  String? name;
   double score;
   int ms;
 
@@ -57,7 +58,7 @@ class Result {
 List<Point> resample(List<Point> points, int numPoints) {
   double I = pathLength(points) / (numPoints - 1); // interval length
   double D = 0.0;
-  List<Point> newpoints = new List<Point>();
+  List<Point> newpoints = <Point>[];
   newpoints.add(points[0]);
   for (var i = 1; i < points.length; i++) {
     var d = distance(points[i - 1], points[i]);
@@ -92,7 +93,7 @@ List<Point> rotateBy(List<Point> points, radians) {
   var c = centroid(points);
   var cos = math.cos(radians);
   var sin = math.sin(radians);
-  var newpoints = new List<Point>();
+  var newpoints = <Point>[];
   for (var i = 0; i < points.length; i++) {
     var qx = (points[i].x - c.x) * cos - (points[i].y - c.y) * sin + c.x;
     var qy = (points[i].x - c.x) * sin + (points[i].y - c.y) * cos + c.y;
@@ -104,7 +105,7 @@ List<Point> rotateBy(List<Point> points, radians) {
 ///non-uniform scale; assumes 2D gestures (i.e., no lines)
 List<Point> scaleTo(List<Point> points, double size) {
   Rectangle B = boundingBox(points);
-  List<Point> newpoints = List<Point>();
+  List<Point> newpoints = <Point>[];
   for (var i = 0; i < points.length; i++) {
     var qx = points[i].x * (size / B.width);
     var qy = points[i].y * (size / B.height);
@@ -116,7 +117,7 @@ List<Point> scaleTo(List<Point> points, double size) {
 ///  translates points' centroid
 List<Point> translateTo(List<Point> points, Point pt) {
   Point c = centroid(points);
-  List<Point> newpoints = new List<Point>();
+  List<Point> newpoints = <Point>[];
   for (var i = 0; i < points.length; i++) {
     var qx = points[i].x + pt.x - c.x;
     var qy = points[i].y + pt.y - c.y;
@@ -128,7 +129,7 @@ List<Point> translateTo(List<Point> points, Point pt) {
 ///for Protractor
 List<double> vectorize(List<Point> points) {
   double sum = 0.0;
-  List<double> vector = new List<double>();
+  List<double> vector = <double>[];
   for (int i = 0; i < points.length; i++) {
     vector.add(points[i].x.roundToDouble());
     vector.add(points[i].y.roundToDouble());
@@ -139,11 +140,11 @@ List<double> vectorize(List<Point> points) {
   return vector;
 }
 
-double optimalCosineDistance(List<double> v1, List<double> v2) {
+double optimalCosineDistance(List<double> v1, List<double>? v2) {
   double a = 0.0;
   double b = 0.0;
   for (int i = 0; i < v1.length; i += 2) {
-    a += v1[i] * v2[i] + v1[i + 1] * v2[i + 1];
+    a += v1[i] * v2![i] + v1[i + 1] * v2[i + 1];
     b += v1[i] * v2[i + 1] - v1[i + 1] * v2[i];
   }
   double angle = math.atan(b / a);
@@ -205,10 +206,10 @@ Rectangle boundingBox(List<Point> points) {
   return new Rectangle(minX, minY, maxX - minX, maxY - minY);
 }
 
-double pathDistance(List<Point> pts1, List<Point> pts2) {
+double pathDistance(List<Point> pts1, List<Point>? pts2) {
   double d = 0.0;
   for (var i = 0; i < pts1.length; i++) // assumes pts1.length == pts2.length
-    d += distance(pts1[i], pts2[i]);
+    d += distance(pts1[i], pts2![i]);
   return d / pts1.length;
 }
 
@@ -225,6 +226,6 @@ double distance(Point p1, Point p2) {
   return math.sqrt(dx * dx + dy * dy);
 }
 
-double deg2Rad(d) {
+double? deg2Rad(d) {
   return (d * math.pi / 180.0);
 }
